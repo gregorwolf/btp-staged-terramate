@@ -49,7 +49,7 @@ jobs:
           use_wrapper: false
           version: latest
 
-      - name: Init Terraform for Dev stack
+      - name: Init Terraform for DEV stack
         shell: bash
         run: |
           export ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
@@ -59,17 +59,7 @@ jobs:
              -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
              -no-color
 
-      - name: Transfer BTP output values
-        id: terraform_output_btp
-        shell: bash
-        run: |
-          export ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
-          terramate run -X --tags btp:${{ env.STAGE }} terraform output -json > output_btp.json
-          echo "cf_api_url=$(jq -r '.cf_api_url.value' output_btp.json)" >> $GITHUB_OUTPUT
-          echo "cf_org_id=$(jq -r '.cf_org_id.value' output_btp.json)" >> $GITHUB_OUTPUT
-          echo "subaccount_url=$(jq -r '.subaccount_url.value' output_btp.json)" >> $GITHUB_OUTPUT
-
-      - name: Terraform Destroy for CF
+      - name: Terraform Destroy for DEV stack
         shell: bash
         run: |
             export ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
@@ -78,9 +68,9 @@ jobs:
             export CF_USER=${{ secrets.BTP_USERNAME }}
             export CF_PASSWORD=${{ secrets.BTP_PASSWORD }}
             export TF_VAR_globalaccount=${{ secrets.GLOBALACCOUNT }}
-            export TF_VAR_project_name='${{ steps.terraform_output_btp.outputs.project-name }}'
-            export TF_VAR_subaccount_region=${{ steps.terraform_output_btp.outputs.subaccount-region }}
-            export TF_VAR_project_costcenter=${{ steps.terraform_output_btp.outputs.cost-center }}
+            export TF_VAR_project_name='${{ github.event.inputs.project-name }}'
+            export TF_VAR_subaccount_region=${{ github.event.inputs.subaccount-region }}
+            export TF_VAR_project_costcenter=${{ github.event.inputs.cost-center }}
             export TF_VAR_cf_space_manager=${{ github.event.inputs.space-responsible }}
             export TF_VAR_cf_space_developer=${{ github.event.inputs.space-responsible }}
             export TF_VAR_cf_space_responsible=${{ github.event.inputs.space-responsible }}
