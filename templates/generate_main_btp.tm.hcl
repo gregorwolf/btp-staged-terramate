@@ -7,7 +7,7 @@ generate_hcl "_terramate_generated_main.tf" {
     data "btp_globalaccount" "this" {}
 
     locals {
-      subaccount_name      = "${tm_upper(terramate.stack.tags[1])} ${var.project_name} DIR"
+      subaccount_name      = "${tm_upper(terramate.stack.tags[1])} ${var.project_name} TM"
       subaccount_subdomain = join("-", [lower(replace("${tm_upper(terramate.stack.tags[1])}-${var.project_name}", " ", "-")), random_uuid.uuid.result])
       service_name_prefix  = lower(replace("${tm_upper(terramate.stack.tags[1])}-${var.project_name}", " ", "-"))
       subaccount_cf_org    = local.subaccount_subdomain

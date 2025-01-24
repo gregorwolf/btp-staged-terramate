@@ -7,7 +7,7 @@ data "btp_globalaccount" "this" {
 locals {
   service_name_prefix = lower(replace("PROD-${var.project_name}", " ", "-"))
   subaccount_cf_org   = local.subaccount_subdomain
-  subaccount_name     = "PROD ${var.project_name} DIR"
+  subaccount_name     = "PROD ${var.project_name} TM"
   subaccount_subdomain = join("-", [
     lower(replace("PROD-${var.project_name}", " ", "-")),
     random_uuid.uuid.result,
